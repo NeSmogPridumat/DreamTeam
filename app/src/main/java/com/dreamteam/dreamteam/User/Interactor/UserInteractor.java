@@ -6,51 +6,55 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.dreamteam.dreamteam.DataStore.HTTP.HTTPConfig;
 import com.dreamteam.dreamteam.DataStore.HTTP.HTTPManager;
 import com.dreamteam.dreamteam.User.Entity.UserData.User;
-import com.dreamteam.dreamteam.User.Protocols.PresenterUserInterface;
-import com.dreamteam.dreamteam.User.Protocols.UserFromHTTPManagerInterface;
+import com.dreamteam.dreamteam.User.Protocols.UserPresenterInterface;
+import com.dreamteam.dreamteam.User.Protocols.UserHTTPManagerInterface;
 import com.google.gson.Gson;
 
 import java.net.SocketTimeoutException;
 
 
-public class UserInteractor implements UserFromHTTPManagerInterface {
+public class UserInteractor implements UserHTTPManagerInterface {
 
-    public final static String TAG = "UserInteractor";
+    private final static String TAG = "UserInteractor";
 
-    HTTPManager httpManager = HTTPManager.get();
+    //===========================КОНСТАНТЫ ДЛЯ ТИПОВ ЗАПРОСА===================================//
+    private final String postUserType = "postUser";
+    private final String imageType = "image";
+    private final String getUserType = "getUser";
 
-    private PresenterUserInterface delegate;
+    private HTTPConfig httpConfig = new HTTPConfig();
 
-    public UserInteractor(PresenterUserInterface delegate) {
+    private HTTPManager httpManager = HTTPManager.get();
+
+    private UserPresenterInterface delegate;
+
+    public UserInteractor(UserPresenterInterface delegate) {
         this.delegate = delegate;
     }
 
-//----------------------------------ОТПРАВКА В HTTPMANAGER---------------------------------------//
+//----------------------------------Входные функции из presenter ОТПРАВКА В HTTPMANAGER---------------------------------------//
 
-    public void getUser(String id) {//----------------------------------отправка запроса на получение User по id
-        final String path = "http://192.168.0.100:8888/user?id=" + id;
+    public void getUser(String id) {//--------------------------------------------------------------отправка запроса на получение User по id
+        final String path = httpConfig.serverURL + httpConfig.userPORT + httpConfig.reqUser + "?id=" + id;
         new Thread(new Runnable() {//---------------------------------------------------------------запуск в фоновом потоке
             @Override
             public void run() {
-                httpManager.getRequest(path, "user", UserInteractor.this);//----------отправка в HTTPManager
+                httpManager.getRequest(path, getUserType, UserInteractor.this);//----------отправка в HTTPManager
             }
         }).start();
     }
 
-
-    public void postUser(String name, String surname) {//--------------отправка post-запроса на сервер
-        final String type = "postUser";
-        final User user = createUser(name, surname);
-        Gson gson = new Gson();
-        final String jsonObject = gson.toJson(user);
-        final String path = "http://192.168.0.100:8888/user";
+    public void postUser(String name, String surname) {//-------------------------------------------отправка post-запроса на сервер
+        final String jsonObject = createUser(name, surname);
+        final String path = httpConfig.serverURL + httpConfig.userPORT + httpConfig.reqUser;
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    httpManager.postRequest(path, jsonObject, type, UserInteractor.this);
+                    httpManager.postRequest(path, jsonObject, postUserType, UserInteractor.this);
                 } catch (Exception error) {
                     error(error);
                 }
@@ -58,44 +62,40 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
         }).start();
     }
 
-
-    public void getAfterPostUser(byte[] byteArray) {
-        final User user = createUserOfBytes(byteArray);
-        String path = "http://192.168.0.100:8888/user?id=" + user.id;
-        httpManager.getRequest(path, "user", UserInteractor.this);
-    }
-
-//----------------------------------------ПОЛУЧЕНИЕ И ОБРАБОТКА ДАННЫХ-----------------------------//
-
-    @Override
-    public void response(byte[] byteArray, String type) {//-----------------------------------------получение ответа от HTTPManager и распределение по типу
-        if (type == "user") {
-            getUserResponse(byteArray);
-        } else if (type == "postUser") {
-            //TODO:возможно вынести в отдельный метод (либо совместить с getUser?)
-            getAfterPostUser(byteArray);
-        } else if (type == "image") {
-            getImage(byteArray);
+    private void getImageRequest(User user) {//-----------------------------------------------------получение картинки
+        try {
+            String imageUrl = httpConfig.serverURL + httpConfig.userPORT + user.content.mediaData.image;
+            httpManager.getRequest(imageUrl, imageType, UserInteractor.this);
+        } catch (Exception ioe) {
+            Log.e(TAG, "Error downloading image", ioe);
         }
     }
 
 
-    @Override
-    public void error(Throwable t) {//--------------------------------------------------------------Обработка ошибки
-        String error = null;
-        if (t instanceof SocketTimeoutException) {
-            error = "Ошибка ожидания сервера";
-        }
-        if (t instanceof NullPointerException) {
-            error = "Объект не найден";
-        }
-        delegate.error(error);
-        Log.e(TAG, "Failed server" + t.toString());
+//----------------------------------Входные функции из presenter ОТПРАВКА В HTTPMANAGER---------------------------------------//
+
+
+    private User createUserOfBytes(byte[] byteArray){//---------------------------------------------создание User из массива байтов
+        Gson gson = new Gson();
+        String jsonString = new String(byteArray);
+        return gson.fromJson(jsonString, User.class);
+    }
+
+    private String objToJSON(Object obj){
+        return new Gson().toJson(obj);
+    }
+
+    private String createUser(String name, String surname) {//--------------------------------------создание jsonString User по name и surname
+        User user = new User();
+        user.content.simpleData.name = name;
+        user.content.simpleData.surname = surname;
+
+        return objToJSON(user);
     }
 
 
-    public void getUserResponse(byte[] byteArray) {//-----------------------------------------------получение json ответа, преобразование его в User и вывод в основной поток
-        Log.i("UserInteractor", "jsonString");
+//----------------------------------ОБРАБОТКА ДАННЫХ ИЗ HTTP MANAGER---------------------------------------//
+    private void prepareGetUserResponse(byte[] byteArray) {//-----------------------------------------------получение json ответа, преобразование его в User и вывод в основной поток
         try {
             final User user = createUserOfBytes(byteArray);
             if (user == null) {
@@ -112,28 +112,13 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
             };
             mainHandler.post(myRunnable);
 
-           // Log.i(TAG, "Поток " + Thread.currentThread().getName());
-            getImageResponse(user);
-
+            getImageRequest(user);
         } catch (Exception error) {
             error(error);
         }
     }
 
-
-    public void getImageResponse(User user) {//-----------------------------------------------------получение картинки
-        try {
-            String type = "image";
-            String imageUrl = "http://192.168.0.100:8888" + user.content.mediaData.image;
-            //Log.i(TAG, "Поток " + Thread.currentThread().getName());
-            httpManager.getRequest(imageUrl, type, UserInteractor.this);
-        } catch (Exception ioe) {
-            Log.e(TAG, "Error downloading image", ioe);
-        }
-    }
-
-
-    public void getImage(byte[] byteArray) {//------------------------------------------------------получение картинки(преобразование в bitmap)
+    private void prepareGetImageResponse(byte[] byteArray) {//------------------------------------------------------получение картинки(преобразование в bitmap)
         final Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
         Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -146,19 +131,33 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
         mainHandler.post(myRunnable);
     }
 
-    private User createUser(String name, String surname) {//----------------------------------------создание User по name и surname
-        User user = new User();
-        user.content.simpleData.name = name;
-        user.content.simpleData.surname = surname;
-        return user;
+
+    //----------------------------------------ПОЛУЧЕНИЕ ДАННЫХ ОТ HTTP MANAGER И ВЫЗОВ ФУНКЦИЙ ДЛЯ ОБРАБОТКИ-----------------------------//
+
+    @Override
+    public void response(byte[] byteArray, String type) {//-----------------------------------------получение ответа от HTTPManager и распределение по типу
+        if (type == getUserType) {
+            prepareGetUserResponse(byteArray);
+        } else if (type == postUserType) {
+
+        } else if (type == imageType) {
+            prepareGetImageResponse(byteArray);
+        }
     }
 
-    private User createUserOfBytes(byte[] byteArray){//---------------------------------------------создание User из массива байтов
-        Gson gson = new Gson();
-        String jsonString = new String(byteArray);
-        final User user = gson.fromJson(jsonString, User.class);
-        return user;
+    @Override
+    public void error(Throwable t) {//--------------------------------------------------------------Обработка ошибки
+        String error = null;
+        if (t instanceof SocketTimeoutException) {
+            error = "Ошибка ожидания сервера";
+        }
+        if (t instanceof NullPointerException) {
+            error = "Объект не найден";
+        }
+        delegate.error(error);
+        Log.e(TAG, "Failed server" + t.toString());
     }
+
 }
 
 

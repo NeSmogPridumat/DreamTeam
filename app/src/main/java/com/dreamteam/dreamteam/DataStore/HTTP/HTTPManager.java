@@ -2,8 +2,6 @@ package com.dreamteam.dreamteam.DataStore.HTTP;
 
 import android.util.Log;
 
-import com.dreamteam.dreamteam.DataStore.HTTP.OutputHTTPManagerInterface;
-
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -65,7 +63,7 @@ public class HTTPManager {
 
 
 
-    public ByteArrayOutputStream readDataFromRequestStream (InputStream inputStream) throws IOException {//получение информации с сервера
+    private ByteArrayOutputStream readDataFromRequestStream(InputStream inputStream) throws IOException {//получение информации с сервера
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         int bytesRead = 0;
         byte[] buffer = new byte[1024];
@@ -118,7 +116,7 @@ public class HTTPManager {
     }
 
 
-    public void sendDelegate(byte [] byteArray,Exception error, String type, OutputHTTPManagerInterface delegate){
+    private void sendDelegate(byte[] byteArray, Exception error, String type, OutputHTTPManagerInterface delegate){
         if (error != null){
             delegate.error(error);
         }
@@ -146,7 +144,7 @@ public class HTTPManager {
         //httpURLConnection.setDoInput(true);//true если надо соединение для ввода, и false, если нет. По умолчанию true
     }
 
-    public void setBodyRequest(String object, HttpURLConnection httpURLConnection) throws IOException {
+    private void setBodyRequest(String object, HttpURLConnection httpURLConnection) throws IOException {
         DataOutputStream out = new DataOutputStream(httpURLConnection.getOutputStream());
         out.writeBytes(object);
         out.flush();

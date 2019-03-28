@@ -21,7 +21,7 @@ import com.dreamteam.dreamteam.User.Protocols.UserViewInterface;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class UserControllerView extends Fragment implements UserViewInterface {
+public class UserViewController extends Fragment implements UserViewInterface {
 
     ImageView userImage, raitingStoryImage, scheduleImage;
     TextView userName, userSurName, mail, call, rating, groupTitle;
@@ -32,7 +32,7 @@ public class UserControllerView extends Fragment implements UserViewInterface {
     String errors;
 
 
-    public UserControllerView() {
+    public UserViewController() {
 
     }
 
@@ -56,13 +56,16 @@ public class UserControllerView extends Fragment implements UserViewInterface {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        presenterUser.getUser("adaadcc7-1c68-4540-a988-4c0b25187223");
+        //GET request
+        presenterUser.getUser("2d089570-d898-45f1-8374-6fc2b8ad938d");
+
+        //POST request
 //        presenterUser.postUser("hsgjkf", "bnmnmc,z");
 
     }
 
-    public static UserControllerView newInstance() {
-        return new UserControllerView();
+    public static UserViewController newInstance() {
+        return new UserViewController();
     }
 
     @Override
@@ -75,14 +78,14 @@ public class UserControllerView extends Fragment implements UserViewInterface {
     // INTERFACE PRESENTER
 
     @Override
-    public void View(User user) {
+    public void outputUserView(User user) {
         userName.setText(user.content.simpleData.name);
         userSurName.setText(user.content.simpleData.surname);
         this.user = user;
     }
 
     @Override
-    public void ViewImage(Bitmap bitmap) {
+    public void outputImageView(Bitmap bitmap) {
         userImage.setImageBitmap(bitmap);
     }
 
