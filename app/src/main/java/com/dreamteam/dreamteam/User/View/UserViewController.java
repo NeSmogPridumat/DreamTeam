@@ -1,7 +1,6 @@
 package com.dreamteam.dreamteam.User.View;
 
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,18 +12,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.dreamteam.dreamteam.MainActivity;
 import com.dreamteam.dreamteam.R;
 import com.dreamteam.dreamteam.User.Entity.UserData.User;
 import com.dreamteam.dreamteam.User.Presenter.UserPresenter;
-import com.dreamteam.dreamteam.User.Protocols.ViewUserInterface;
+import com.dreamteam.dreamteam.User.Protocols.UserViewInterface;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class UserViewFragment extends Fragment implements ViewUserInterface {
+public class UserControllerView extends Fragment implements UserViewInterface {
 
     ImageView userImage, raitingStoryImage, scheduleImage;
     TextView userName, userSurName, mail, call, rating, groupTitle;
@@ -32,11 +29,10 @@ public class UserViewFragment extends Fragment implements ViewUserInterface {
     public UserPresenter presenterUser = new UserPresenter(this);
 
     User user = new User();
-    Bitmap bitmapU;
     String errors;
 
 
-    public UserViewFragment() {
+    public UserControllerView() {
 
     }
 
@@ -65,8 +61,8 @@ public class UserViewFragment extends Fragment implements ViewUserInterface {
 
     }
 
-    public static UserViewFragment newInstance() {
-        return new UserViewFragment();
+    public static UserControllerView newInstance() {
+        return new UserControllerView();
     }
 
     @Override
@@ -74,6 +70,9 @@ public class UserViewFragment extends Fragment implements ViewUserInterface {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.user_fragment, menu);
     }
+
+
+    // INTERFACE PRESENTER
 
     @Override
     public void View(User user) {
@@ -84,8 +83,7 @@ public class UserViewFragment extends Fragment implements ViewUserInterface {
 
     @Override
     public void ViewImage(Bitmap bitmap) {
-        bitmapU = bitmap;
-        userImage.setImageBitmap(bitmapU);
+        userImage.setImageBitmap(bitmap);
     }
 
     @Override
