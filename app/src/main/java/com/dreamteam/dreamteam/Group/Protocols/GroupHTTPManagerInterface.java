@@ -1,4 +1,6 @@
-package com.dreamteam.httprequest.Interfaces;
+package com.dreamteam.dreamteam.Group.Protocols;
 
-public interface GroupHTTPManagerInterface extends OutputHTTPManagerInterface{
+import com.dreamteam.dreamteam.DataStore.HTTP.OutputHTTPManagerInterface;
+
+public interface GroupHTTPManagerInterface extends OutputHTTPManagerInterface {
 }

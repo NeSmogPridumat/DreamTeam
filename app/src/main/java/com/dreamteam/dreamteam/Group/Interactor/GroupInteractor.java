@@ -1,15 +1,15 @@
-package com.dreamteam.httprequest.Group.Interactor;
+package com.dreamteam.dreamteam.Group.Interactor;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
-import com.dreamteam.httprequest.Group.Protocols.GroupPresenterInterface;
-import com.dreamteam.httprequest.HTTPConfig;
-import com.dreamteam.httprequest.HTTPManager;
-import com.dreamteam.httprequest.Interfaces.GroupHTTPManagerInterface;
+import com.dreamteam.dreamteam.Group.Entity.GroupData.Group;
+import com.dreamteam.dreamteam.Group.Protocols.GroupPresenterInterface;
+import com.dreamteam.dreamteam.DataStore.HTTP.HTTPConfig;
+import com.dreamteam.dreamteam.DataStore.HTTP.HTTPManager;
+import com.dreamteam.dreamteam.Group.Protocols.GroupHTTPManagerInterface;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -17,9 +17,8 @@ import java.util.ArrayList;
 
 public class GroupInteractor implements GroupHTTPManagerInterface {
 
-    private final String getGroupsType = "getGroups";
-    private final String getImageGroupType = "getImageGroups";
-    private final String getLastImageGroupType = "getLastImageGroupType";
+    private final String GET_GROUPS_TYPE = "getGroups";
+    private final String GET_IMAGE_GROUP_TYPE = "getImageGroups";
 
     private HTTPConfig httpConfig = new HTTPConfig();
 
@@ -39,7 +38,7 @@ public class GroupInteractor implements GroupHTTPManagerInterface {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                httpManager.getRequest(path, getGroupsType, GroupInteractor.this);
+                httpManager.getRequest(path, GET_GROUPS_TYPE, GroupInteractor.this);
             }
         }).start();
     }
@@ -48,7 +47,7 @@ public class GroupInteractor implements GroupHTTPManagerInterface {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                httpManager.getRequest(pathImage,getImageGroupType + ":" + groupID, GroupInteractor.this);
+                httpManager.getRequest(pathImage, GET_IMAGE_GROUP_TYPE + ":" + groupID, GroupInteractor.this);
             }
         }).start();
     }
@@ -57,11 +56,10 @@ public class GroupInteractor implements GroupHTTPManagerInterface {
 
     @Override
     public void response(byte[] byteArray, String type) {
-        if (type == getGroupsType){
+        if (type.equals(GET_GROUPS_TYPE)){
             prepareGetGroupsResponse(byteArray);
-            //TODO else if сделал
         }else if ((parsingStringType(type).length > 1) && (parsingStringType(type)[0]
-                .equals(getImageGroupType))){
+                .equals(GET_IMAGE_GROUP_TYPE))){
                 prepareGetBitmapOfByte(parsingStringType(type)[1], byteArray);
         }
     }
@@ -76,7 +74,7 @@ public class GroupInteractor implements GroupHTTPManagerInterface {
     private void prepareGetBitmapOfByte(final String groupID, byte[] byteArray){
         if (byteArray != null){
             final Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-            android.os.Handler mainHandler = new Handler(Looper.getMainLooper());
+            Handler mainHandler = new Handler(Looper.getMainLooper());
             Runnable myRunnable = new Runnable() {
                 @Override
                 public void run() {
@@ -95,7 +93,7 @@ public class GroupInteractor implements GroupHTTPManagerInterface {
             delegate.error(error);
         }
 
-        android.os.Handler mainHandler = new android.os.Handler(Looper.getMainLooper());
+        Handler mainHandler = new Handler(Looper.getMainLooper());
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
@@ -118,7 +116,7 @@ public class GroupInteractor implements GroupHTTPManagerInterface {
         }
     }
 
-    private String[] parsingStringType(String string){//--------------------------------------------разбор строки (getImageGroupType + ":" + groupID)
+    private String[] parsingStringType(String string){//--------------------------------------------разбор строки (GET_IMAGE_GROUP_TYPE + ":" + groupID)
         String delimiter = ":";
         return string.split(delimiter);
     }

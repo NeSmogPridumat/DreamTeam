@@ -1,11 +1,11 @@
-package com.dreamteam.httprequest.Group.Presenter;
+package com.dreamteam.dreamteam.Group.Presenter;
 
 import android.graphics.Bitmap;
 
-import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
-import com.dreamteam.httprequest.Group.Interactor.GroupInteractor;
-import com.dreamteam.httprequest.Group.Protocols.GroupPresenterInterface;
-import com.dreamteam.httprequest.Group.Protocols.GroupViewInterface;
+import com.dreamteam.dreamteam.Group.Entity.GroupData.Group;
+import com.dreamteam.dreamteam.Group.Interactor.GroupInteractor;
+import com.dreamteam.dreamteam.Group.Protocols.GroupPresenterInterface;
+import com.dreamteam.dreamteam.Group.Protocols.GroupViewInterface;
 
 import java.util.ArrayList;
 

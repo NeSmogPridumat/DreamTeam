@@ -21,9 +21,9 @@ public class UserInteractor implements UserHTTPManagerInterface {
     private final static String TAG = "UserInteractor";
 
     //===========================КОНСТАНТЫ ДЛЯ ТИПОВ ЗАПРОСА===================================//
-    private final String postUserType = "postUser";
-    private final String imageType = "image";
-    private final String getUserType = "getUser";
+    private final String POST_USER_TYPE = "postUser";
+    private final String IMAGE_TYPE = "image";
+    private final String GET_USER_TYPE = "getUser";
 
     private HTTPConfig httpConfig = new HTTPConfig();
 
@@ -42,7 +42,7 @@ public class UserInteractor implements UserHTTPManagerInterface {
         new Thread(new Runnable() {//---------------------------------------------------------------запуск в фоновом потоке
             @Override
             public void run() {
-                httpManager.getRequest(path, getUserType, UserInteractor.this);//----------отправка в HTTPManager
+                httpManager.getRequest(path, GET_USER_TYPE, UserInteractor.this);//----------отправка в HTTPManager
             }
         }).start();
     }
@@ -54,7 +54,7 @@ public class UserInteractor implements UserHTTPManagerInterface {
             @Override
             public void run() {
                 try {
-                    httpManager.postRequest(path, jsonObject, postUserType, UserInteractor.this);
+                    httpManager.postRequest(path, jsonObject, POST_USER_TYPE, UserInteractor.this);
                 } catch (Exception error) {
                     error(error);
                 }
@@ -65,7 +65,7 @@ public class UserInteractor implements UserHTTPManagerInterface {
     private void getImageRequest(User user) {//-----------------------------------------------------получение картинки
         try {
             String imageUrl = httpConfig.serverURL + httpConfig.userPORT + user.content.mediaData.image;
-            httpManager.getRequest(imageUrl, imageType, UserInteractor.this);
+            httpManager.getRequest(imageUrl, IMAGE_TYPE, UserInteractor.this);
         } catch (Exception ioe) {
             Log.e(TAG, "Error downloading image", ioe);
         }
@@ -136,11 +136,11 @@ public class UserInteractor implements UserHTTPManagerInterface {
 
     @Override
     public void response(byte[] byteArray, String type) {//-----------------------------------------получение ответа от HTTPManager и распределение по типу
-        if (type == getUserType) {
+        if (type == GET_USER_TYPE) {
             prepareGetUserResponse(byteArray);
-        } else if (type == postUserType) {
+        } else if (type == POST_USER_TYPE) {
 
-        } else if (type == imageType) {
+        } else if (type == IMAGE_TYPE) {
             prepareGetImageResponse(byteArray);
         }
     }

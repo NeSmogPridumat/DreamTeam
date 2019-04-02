@@ -1,8 +1,8 @@
-package com.dreamteam.httprequest.Group.Protocols;
+package com.dreamteam.dreamteam.Group.Protocols;
 
 import android.graphics.Bitmap;
 
-import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
+import com.dreamteam.dreamteam.Group.Entity.GroupData.Group;
 
 import java.util.ArrayList;
 
@@ -12,5 +12,5 @@ public interface GroupPresenterInterface {
 
     void answerGetGroups(ArrayList<Group> groupCollection);
 
-    void error (String error);
+    void error(String error);
 }

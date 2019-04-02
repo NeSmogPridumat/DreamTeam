@@ -57,7 +57,7 @@ public class UserViewController extends Fragment implements UserViewInterface {
         setHasOptionsMenu(true);
 
         //GET request
-        presenterUser.getUser("2d089570-d898-45f1-8374-6fc2b8ad938d");
+        presenterUser.getUser("328d21d2-9797-4802-9f5d-0e0b3f204866");
 
         //POST request
 //        presenterUser.postUser("hsgjkf", "bnmnmc,z");

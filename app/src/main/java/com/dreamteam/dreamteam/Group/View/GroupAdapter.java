@@ -1,6 +1,5 @@
-package com.dreamteam.httprequest.Group.View;
+package com.dreamteam.dreamteam.Group.View;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -8,27 +7,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
-import com.dreamteam.httprequest.R;
+import com.dreamteam.dreamteam.Group.Entity.GroupData.Group;
+import com.dreamteam.dreamteam.R;
 
 import java.util.ArrayList;
 
 public class GroupAdapter extends RecyclerView.Adapter<GroupHolder>{
     public ArrayList<Group> groupCollection;
 
-    public GroupAdapter(ArrayList<Group> groupCollection){
+    GroupAdapter(ArrayList<Group> groupCollection){
         this.groupCollection = groupCollection;
     }
 
-    public  void changeItem(String groupID, Bitmap bitmap){
+    public void changeItem(String groupID, Bitmap bitmap){//сравнивает id который пришел с картинкой и id групп из списка и выставляет подходящей группе эту каритнку
         for (int i = 0; i < groupCollection.size(); i ++){
             Group group = groupCollection.get(i);
             if (group.id.equals(groupID)){
-//                group.content.simpleData.title = group.content.simpleData.title + "Update";
                 group.content.mediaData.imageData = bitmap;
             }
+            this.notifyItemChanged(i);//обновление позиции
         }
-        this.notifyItemRangeChanged(0, groupCollection.size());
     }
 
     @NonNull
@@ -42,8 +40,6 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupHolder>{
     @Override
     public void onBindViewHolder(@NonNull GroupHolder groupsHolder, int i) {
         Group group = groupCollection.get(i);
-        Context context = groupsHolder.imageView.getContext();
-//        groupsHolder.bindGroup(group, groupIDThis, bitmapThis);
         groupsHolder.bindGroup(group);
 
     }
@@ -51,7 +47,6 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupHolder>{
     @Override
     public int getItemCount() {
         return groupCollection.size();
-//        return  0;
     }
 }
 

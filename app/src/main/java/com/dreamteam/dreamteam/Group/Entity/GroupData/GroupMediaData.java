@@ -1,4 +1,4 @@
-package com.dreamteam.httprequest.Group.Entity.GroupData;
+package com.dreamteam.dreamteam.Group.Entity.GroupData;
 
 import android.graphics.Bitmap;
 
