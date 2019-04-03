@@ -93,7 +93,6 @@ public class UserViewController extends Fragment implements UserViewInterface {
     public void error(String error) {
         errors = error;
     }
-//        Toast toast = Toast.makeText(getContext(), errors, Toast.LENGTH_LONG).show();
 
 }
 
