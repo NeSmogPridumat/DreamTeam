@@ -1,11 +1,11 @@
-package com.dreamteam.dreamteam.Group.View;
+package com.dreamteam.dreamteam.GroupList.View;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.dreamteam.dreamteam.Group.Entity.GroupData.Group;
+import com.dreamteam.dreamteam.GroupList.Entity.GroupData.Group;
 import com.dreamteam.dreamteam.R;
 
 class GroupHolder extends RecyclerView.ViewHolder{
@@ -21,7 +21,7 @@ class GroupHolder extends RecyclerView.ViewHolder{
         imageView = item.findViewById(R.id.group_image_view);
     }
 
-    void bindGroup(Group group){
+    void bindGroup(Group group){//распределение данных по view holder
         titleTextView.setText(group.content.simpleData.title);
         descriptionTextView.setText(group.content.simpleData.description);
 

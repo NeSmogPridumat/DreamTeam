@@ -24,6 +24,7 @@ public class UserInteractor implements UserHTTPManagerInterface {
     private final String POST_USER_TYPE = "postUser";
     private final String IMAGE_TYPE = "image";
     private final String GET_USER_TYPE = "getUser";
+    private final String _ID_USER = "?id=";
 
     private HTTPConfig httpConfig = new HTTPConfig();
 
@@ -38,7 +39,7 @@ public class UserInteractor implements UserHTTPManagerInterface {
 //----------------------------------Входные функции из presenter ОТПРАВКА В HTTPMANAGER---------------------------------------//
 
     public void getUser(String id) {//--------------------------------------------------------------отправка запроса на получение User по id
-        final String path = httpConfig.serverURL + httpConfig.userPORT + httpConfig.reqUser + "?id=" + id;
+        final String path = httpConfig.serverURL + httpConfig.userPORT + httpConfig.reqUser + _ID_USER + id;
         new Thread(new Runnable() {//---------------------------------------------------------------запуск в фоновом потоке
             @Override
             public void run() {
@@ -136,11 +137,11 @@ public class UserInteractor implements UserHTTPManagerInterface {
 
     @Override
     public void response(byte[] byteArray, String type) {//-----------------------------------------получение ответа от HTTPManager и распределение по типу
-        if (type == GET_USER_TYPE) {
+        if (type.equals(GET_USER_TYPE)) {
             prepareGetUserResponse(byteArray);
-        } else if (type == POST_USER_TYPE) {
+        } else if (type.equals(POST_USER_TYPE)) {
 
-        } else if (type == IMAGE_TYPE) {
+        } else if (type.equals(IMAGE_TYPE)) {
             prepareGetImageResponse(byteArray);
         }
     }

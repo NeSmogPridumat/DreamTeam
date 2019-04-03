@@ -1,4 +1,4 @@
-package com.dreamteam.dreamteam.Group.View;
+package com.dreamteam.dreamteam.GroupList.View;
 
 
 import android.graphics.Bitmap;
@@ -11,9 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.dreamteam.dreamteam.Group.Entity.GroupData.Group;
-import com.dreamteam.dreamteam.Group.Presenter.GroupPresenter;
-import com.dreamteam.dreamteam.Group.Protocols.GroupViewInterface;
+import com.dreamteam.dreamteam.GroupList.Entity.GroupData.Group;
+import com.dreamteam.dreamteam.GroupList.Presenter.GroupsPresenter;
+import com.dreamteam.dreamteam.GroupList.Protocols.GroupsViewInterface;
 import com.dreamteam.dreamteam.R;
 
 import java.util.ArrayList;
@@ -21,15 +21,15 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class GroupsListFragment extends Fragment implements GroupViewInterface {
+public class GroupsListController extends Fragment implements GroupsViewInterface {
 
     private RecyclerView groupsRecyclerView;
 
     private GroupAdapter adapter;
 
-    public GroupPresenter groupPresenter = new GroupPresenter(this);
+    public GroupsPresenter groupPresenter = new GroupsPresenter(this);
 
-    public GroupsListFragment() {
+    public GroupsListController() {
 
     }
 

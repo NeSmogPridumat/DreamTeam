@@ -26,7 +26,7 @@ public class UserViewController extends Fragment implements UserViewInterface {
     ImageView userImage, raitingStoryImage, scheduleImage;
     TextView userName, userSurName, mail, call, rating, groupTitle;
 
-    public UserPresenter presenterUser = new UserPresenter(this);
+    UserPresenter presenterUser = new UserPresenter(this);
 
     User user = new User();
     String errors;
@@ -79,9 +79,9 @@ public class UserViewController extends Fragment implements UserViewInterface {
 
     @Override
     public void outputUserView(User user) {
+        this.user = user;
         userName.setText(user.content.simpleData.name);
         userSurName.setText(user.content.simpleData.surname);
-        this.user = user;
     }
 
     @Override

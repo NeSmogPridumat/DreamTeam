@@ -7,13 +7,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-import com.dreamteam.dreamteam.Group.View.GroupsListFragment;
+import com.dreamteam.dreamteam.GroupList.View.GroupsListController;
 import com.dreamteam.dreamteam.User.View.UserViewController;
 
 public class MainActivity extends AppCompatActivity {
 
     UserViewController userFragment = new UserViewController();
-    GroupsListFragment groupsListFragment = new GroupsListFragment();
+    GroupsListController groupsListController = new GroupsListController();
     BlankTest testFragment = new BlankTest();
 
     @Override
@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
                     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                         switch (menuItem.getItemId()){
                             case R.id.groups:
-                                changeFragment(groupsListFragment);
+                                changeFragment(groupsListController);
                                 break;
 
                             case R.id.profile:

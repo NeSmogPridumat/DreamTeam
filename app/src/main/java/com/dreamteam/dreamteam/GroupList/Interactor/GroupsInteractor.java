@@ -1,32 +1,34 @@
-package com.dreamteam.dreamteam.Group.Interactor;
+package com.dreamteam.dreamteam.GroupList.Interactor;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.dreamteam.dreamteam.Group.Entity.GroupData.Group;
-import com.dreamteam.dreamteam.Group.Protocols.GroupPresenterInterface;
+import com.dreamteam.dreamteam.GroupList.Entity.GroupData.Group;
+import com.dreamteam.dreamteam.GroupList.Protocols.GroupsPresenterInterface;
 import com.dreamteam.dreamteam.DataStore.HTTP.HTTPConfig;
 import com.dreamteam.dreamteam.DataStore.HTTP.HTTPManager;
-import com.dreamteam.dreamteam.Group.Protocols.GroupHTTPManagerInterface;
+import com.dreamteam.dreamteam.GroupList.Protocols.GroupsHTTPManagerInterface;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 
-public class GroupInteractor implements GroupHTTPManagerInterface {
+public class GroupsInteractor implements GroupsHTTPManagerInterface {
 
     private final String GET_GROUPS_TYPE = "getGroups";
     private final String GET_IMAGE_GROUP_TYPE = "getImageGroups";
+
+    private final String _ID_USER = "?userID=";
 
     private HTTPConfig httpConfig = new HTTPConfig();
 
     private HTTPManager httpManager = HTTPManager.get();
 
-    private GroupPresenterInterface delegate;
+    private GroupsPresenterInterface delegate;
 
-    public GroupInteractor(GroupPresenterInterface delegate){
+    public GroupsInteractor(GroupsPresenterInterface delegate){
         this.delegate = delegate;
     }
 
@@ -34,11 +36,11 @@ public class GroupInteractor implements GroupHTTPManagerInterface {
 
     public void getGroups (String userId){
         final String path = httpConfig.serverURL + httpConfig.groupPORT + httpConfig.reqGroup +
-                httpConfig.reqUser + "?userID=" + userId;
+                httpConfig.reqUser + _ID_USER + userId;
         new Thread(new Runnable() {
             @Override
             public void run() {
-                httpManager.getRequest(path, GET_GROUPS_TYPE, GroupInteractor.this);
+                httpManager.getRequest(path, GET_GROUPS_TYPE, GroupsInteractor.this);
             }
         }).start();
     }
@@ -47,7 +49,7 @@ public class GroupInteractor implements GroupHTTPManagerInterface {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                httpManager.getRequest(pathImage, GET_IMAGE_GROUP_TYPE + ":" + groupID, GroupInteractor.this);
+                httpManager.getRequest(pathImage, GET_IMAGE_GROUP_TYPE + ":" + groupID, GroupsInteractor.this);
             }
         }).start();
     }

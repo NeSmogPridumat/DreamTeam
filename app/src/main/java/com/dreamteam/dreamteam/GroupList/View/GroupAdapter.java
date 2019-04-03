@@ -1,4 +1,4 @@
-package com.dreamteam.dreamteam.Group.View;
+package com.dreamteam.dreamteam.GroupList.View;
 
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.dreamteam.dreamteam.Group.Entity.GroupData.Group;
+import com.dreamteam.dreamteam.GroupList.Entity.GroupData.Group;
 import com.dreamteam.dreamteam.R;
 
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupHolder>{
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GroupHolder groupsHolder, int i) {
+    public void onBindViewHolder(@NonNull GroupHolder groupsHolder, int i) {//передача холдерам списка групп по позициям
         Group group = groupCollection.get(i);
         groupsHolder.bindGroup(group);
 
@@ -47,6 +47,6 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupHolder>{
     @Override
     public int getItemCount() {
         return groupCollection.size();
-    }
+    }//передается размер массива
 }
 
