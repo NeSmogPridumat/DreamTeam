@@ -5,7 +5,7 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.dreamteam.dreamteam.GroupList.Entity.GroupData.Group;
+import com.dreamteam.dreamteam.Group.Entity.GroupData.Group;
 import com.dreamteam.dreamteam.GroupList.Protocols.GroupsPresenterInterface;
 import com.dreamteam.dreamteam.DataStore.HTTP.HTTPConfig;
 import com.dreamteam.dreamteam.DataStore.HTTP.HTTPManager;
@@ -55,7 +55,6 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
     }
 
     //--------------------------Получение данных из HTTP MANAGER и вызов функций обработки---------//
-
     @Override
     public void response(byte[] byteArray, String type) {
         if (type.equals(GET_GROUPS_TYPE)){
@@ -75,12 +74,13 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
 
     private void prepareGetBitmapOfByte(final String groupID, byte[] byteArray){
         if (byteArray != null){
-            final Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
             Handler mainHandler = new Handler(Looper.getMainLooper());
+            Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+            final Bitmap finalBitmap = bitmap;
             Runnable myRunnable = new Runnable() {
                 @Override
                 public void run() {
-                    delegate.answerGetImageGroups(groupID, bitmap);
+                    delegate.answerGetImageGroups(groupID, finalBitmap);
                 }
             };
             mainHandler.post(myRunnable);
@@ -106,10 +106,9 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
 
         getImageRequest(groupCollection);
     }
-
     //-----------------------------------------------------------------------------------------//
 
-    private void getImageRequest (ArrayList<Group> groupCollection){//-------------------------------отправка запросов на получение картинок для списка групп
+    private void getImageRequest (ArrayList<Group> groupCollection){//------------------------------отправка запросов на получение картинок для списка групп
         if (groupCollection != null)
         for (int i = 0 ; i<groupCollection.size(); i++){
             Group group = groupCollection.get(i);
@@ -118,12 +117,14 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
         }
     }
 
-    private String[] parsingStringType(String string){//--------------------------------------------разбор строки (GET_IMAGE_GROUP_TYPE + ":" + groupID)
+    //разбор строки (GET_IMAGE_GROUP_TYPE + ":" + groupID)
+    private String[] parsingStringType(String string){
         String delimiter = ":";
         return string.split(delimiter);
     }
 
-    private ArrayList<Group> createGroupsOfBytes (byte[] byteArray){//----------------------создание массива групп из массива байтов
+    //создание массива групп из массива байтов
+    private ArrayList<Group> createGroupsOfBytes (byte[] byteArray){
         Gson gson = new Gson();
         String jsonString = new String(byteArray);
         return gson.fromJson(jsonString, new TypeToken<ArrayList<Group>>(){}.getType());

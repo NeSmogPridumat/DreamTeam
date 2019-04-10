@@ -11,6 +11,7 @@ import java.net.URL;
 
 public class HTTPManager {
 
+
     private static HTTPManager httpManager;
 
     public static HTTPManager get(){
@@ -45,10 +46,20 @@ public class HTTPManager {
 
         setBodyRequest(object, urlConnection);
         prepareResponce(urlConnection, type, delegate);
-
     }
 
-//------------------------------------------ SUPPORT FUNCTION FOR REQUESTS------------------------//
+    public void putRequest (String urlPath, String object, String type, OutputHTTPManagerInterface delegate) throws IOException {//---put запрос
+        HttpURLConnection urlConnection = createUrlConnection(urlPath);
+
+        settingResponseGeneral(urlConnection);
+        settingResponsePut(urlConnection);
+
+        setBodyRequest(object, urlConnection);
+        prepareResponce(urlConnection, type, delegate);
+    }
+
+
+    //------------------------------------------ SUPPORT FUNCTION FOR REQUESTS------------------------//
     private HttpURLConnection createUrlConnection(String urlPath) {//-------------------------------создание HttpURLConnection
         HttpURLConnection urlConnection = null;
         try {
@@ -63,15 +74,16 @@ public class HTTPManager {
 
 
 
-    private ByteArrayOutputStream readDataFromRequestStream(InputStream inputStream) throws IOException {//получение информации с сервера
+    public ByteArrayOutputStream readDataFromRequestStream (InputStream inputStream) throws IOException {//получение информации с сервера
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        int bytesRead = 0;
+        int bytesRead;
         byte[] buffer = new byte[1024];
         while ((bytesRead = inputStream.read(buffer)) > 0) {//--------------------------------------программа многократно вызывает read, пока в подключении не кончатся данные
             out.write(buffer, 0, bytesRead);
         }
         out.close();
         return out;
+
     }
 
     private boolean isUrlConnect (HttpURLConnection urlConnection){//-------------------------------проверка ответа сервера
@@ -79,7 +91,7 @@ public class HTTPManager {
         try{
             if (urlConnection.getResponseCode() == 200){
                 result = true;
-            } else {
+            } else {//------------------------------------------------------------------------------если зарпрос неуспешен (не равен 200), выдается описание ошибки в Log
                 String message = urlConnection.getResponseMessage();
                 int responseCode = urlConnection.getResponseCode();
                 Log.i("RESPONSE ERROR", "URL - " + urlConnection.getURL() +
@@ -116,7 +128,7 @@ public class HTTPManager {
     }
 
 
-    private void sendDelegate(byte[] byteArray, Exception error, String type, OutputHTTPManagerInterface delegate){
+    private void sendDelegate(byte[] byteArray, Exception error, String type, OutputHTTPManagerInterface delegate){//отправка данных делегатам
         if (error != null){
             delegate.error(error);
         }
@@ -126,8 +138,10 @@ public class HTTPManager {
     //---------------------------------------SETTING------------------------------------------------//
 
     private void settingResponseGeneral(HttpURLConnection httpURLConnection){
+        httpURLConnection.setRequestProperty ("Cache-Control", "no-cache");
         httpURLConnection.setUseCaches(false);//если true, то соединению разоешается использовать любой доступный кэш. Если false, кэши должны игнорироваться. По умолчанию стоит true
         //httpURLConnection.setRequestProperty("Authorization", "Auth:test");
+        httpURLConnection.setDefaultUseCaches(false);
     }
 
     private void settingResponseGet(HttpURLConnection httpURLConnection){
@@ -139,12 +153,17 @@ public class HTTPManager {
         httpURLConnection.setDoOutput(true);//true если надо использовать соединеие URL для вывода, и false, если нет. По умолчанию false
         httpURLConnection.setChunkedStreamingMode(0);//если неизвестна длина тела вызывается метод setChunkedStreamingMode(0), противном случае HTTPUrlConnection будет вынужден буферизовать полное тело увеличивая задержку
         httpURLConnection.setRequestProperty("Content-Type", "application/json");//устанавливает общее свойство запроса <Ключ(String) - ключевое слово, по которому известен запрос, значение(String) - значение, связанное с ключом>
-
-
         //httpURLConnection.setDoInput(true);//true если надо соединение для ввода, и false, если нет. По умолчанию true
     }
 
-    private void setBodyRequest(String object, HttpURLConnection httpURLConnection) throws IOException {
+    private void settingResponsePut(HttpURLConnection httpURLConnection) throws IOException {
+        httpURLConnection.setDoOutput(true);
+        httpURLConnection.setRequestMethod("PUT");
+        httpURLConnection.setDoInput(true);
+        httpURLConnection.setRequestProperty("Content-Type", "application/json");
+    }
+
+    private void setBodyRequest(String object, HttpURLConnection httpURLConnection) throws IOException {//отправка тела запроса
         DataOutputStream out = new DataOutputStream(httpURLConnection.getOutputStream());
         out.writeBytes(object);
         out.flush();

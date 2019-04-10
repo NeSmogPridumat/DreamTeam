@@ -94,7 +94,6 @@ public class UserInteractor implements UserHTTPManagerInterface {
         return objToJSON(user);
     }
 
-
 //----------------------------------ОБРАБОТКА ДАННЫХ ИЗ HTTP MANAGER---------------------------------------//
     private void prepareGetUserResponse(byte[] byteArray) {//-----------------------------------------------получение json ответа, преобразование его в User и вывод в основной поток
         try {
@@ -132,7 +131,6 @@ public class UserInteractor implements UserHTTPManagerInterface {
         mainHandler.post(myRunnable);
     }
 
-
     //----------------------------------------ПОЛУЧЕНИЕ ДАННЫХ ОТ HTTP MANAGER И ВЫЗОВ ФУНКЦИЙ ДЛЯ ОБРАБОТКИ-----------------------------//
 
     @Override
@@ -158,7 +156,6 @@ public class UserInteractor implements UserHTTPManagerInterface {
         delegate.error(error);
         Log.e(TAG, "Failed server" + t.toString());
     }
-
 }
 
 

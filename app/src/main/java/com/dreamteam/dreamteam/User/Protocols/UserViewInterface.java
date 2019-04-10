@@ -4,9 +4,9 @@ import android.graphics.Bitmap;
 import com.dreamteam.dreamteam.User.Entity.UserData.User;
 
 public interface UserViewInterface {
-    void outputUserView(User user);
+    void View(User user);
 
-    void outputImageView(Bitmap bitmap);
+    void ViewImage(Bitmap bitmap);
 
-    void  error(String error);
+    void  error (String error);
 }

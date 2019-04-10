@@ -1,8 +1,0 @@
-package com.dreamteam.dreamteam.GroupList.Entity.GroupData;
-
-import android.graphics.Bitmap;
-
-public class GroupMediaData {
-    public String image = "";
-    public Bitmap imageData;
-}

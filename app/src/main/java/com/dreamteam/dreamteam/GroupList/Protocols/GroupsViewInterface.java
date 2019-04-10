@@ -2,7 +2,7 @@ package com.dreamteam.dreamteam.GroupList.Protocols;
 
 import android.graphics.Bitmap;
 
-import com.dreamteam.dreamteam.GroupList.Entity.GroupData.Group;
+import com.dreamteam.dreamteam.Group.Entity.GroupData.Group;
 
 import java.util.ArrayList;
 

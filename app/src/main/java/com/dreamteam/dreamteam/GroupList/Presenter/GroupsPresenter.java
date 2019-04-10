@@ -2,7 +2,7 @@ package com.dreamteam.dreamteam.GroupList.Presenter;
 
 import android.graphics.Bitmap;
 
-import com.dreamteam.dreamteam.GroupList.Entity.GroupData.Group;
+import com.dreamteam.dreamteam.Group.Entity.GroupData.Group;
 import com.dreamteam.dreamteam.GroupList.Interactor.GroupsInteractor;
 import com.dreamteam.dreamteam.GroupList.Protocols.GroupsPresenterInterface;
 import com.dreamteam.dreamteam.GroupList.Protocols.GroupsViewInterface;
@@ -18,6 +18,13 @@ public class GroupsPresenter implements GroupsPresenterInterface {
         this.delegate = delegate;
     }
 
+    //проброс запроса в interactor
+    public void getGroups(String id) {
+        groupsInteractor.getGroups(id);
+    }
+
+
+    //===================================обработка ответов===========================
     @Override
     public void answerGetImageGroups(String groupID, Bitmap bitmap) {
         delegate.redrawAdapter(groupID, bitmap);
@@ -31,9 +38,5 @@ public class GroupsPresenter implements GroupsPresenterInterface {
     @Override
     public void error(String error) {
 
-    }
-
-    public void getGroups(String id) {
-        groupsInteractor.getGroups(id);
     }
 }
