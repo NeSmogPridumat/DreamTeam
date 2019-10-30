@@ -148,18 +148,20 @@ public class HTTPManager {
         //httpURLConnection.setRequestProperty();
     }
 
-    private void settingResponsePost(HttpURLConnection httpURLConnection){
+    private void settingResponsePost(HttpURLConnection httpURLConnection) throws IOException{
         //TODO: оставить только что  необходимо
         httpURLConnection.setDoOutput(true);//true если надо использовать соединеие URL для вывода, и false, если нет. По умолчанию false
+        httpURLConnection.setRequestMethod("POST");
         httpURLConnection.setChunkedStreamingMode(0);//если неизвестна длина тела вызывается метод setChunkedStreamingMode(0), противном случае HTTPUrlConnection будет вынужден буферизовать полное тело увеличивая задержку
         httpURLConnection.setRequestProperty("Content-Type", "application/json");//устанавливает общее свойство запроса <Ключ(String) - ключевое слово, по которому известен запрос, значение(String) - значение, связанное с ключом>
+
         //httpURLConnection.setDoInput(true);//true если надо соединение для ввода, и false, если нет. По умолчанию true
     }
 
     private void settingResponsePut(HttpURLConnection httpURLConnection) throws IOException {
         httpURLConnection.setDoOutput(true);
         httpURLConnection.setRequestMethod("PUT");
-        httpURLConnection.setDoInput(true);
+        httpURLConnection.setChunkedStreamingMode(0);//если неизвестна длина тела вызывается метод setChunkedStreamingMode(0), противном случае HTTPUrlConnection будет вынужден буферизовать полное тело увеличивая задержку
         httpURLConnection.setRequestProperty("Content-Type", "application/json");
     }
 

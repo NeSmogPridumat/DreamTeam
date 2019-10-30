@@ -43,7 +43,6 @@ public class EditProfileController extends Fragment implements ViewEditProfileIn
     private User user;
     private Bitmap bitmap;
     private EditText editName, editSurname;
-    private ImageButton makePhotoButton;
     private Button saveButton;
     private ImageView editImageView;
 
@@ -85,7 +84,7 @@ public class EditProfileController extends Fragment implements ViewEditProfileIn
             }
         });
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
+        saveButton.setOnClickListener(new View.OnClickListener() {//TODO: сделать так, что если какие-то данные не изменились, то не отправлять эти данные на сервер
             @Override
             public void onClick(View v) {//-----------------------------------------------------слушатель на кнопку Save
                 if ((editName.getText().toString().equals("")))//-----------------------------------проверка на заполнение поля
@@ -110,7 +109,7 @@ public class EditProfileController extends Fragment implements ViewEditProfileIn
     }
 
     private void showPopupMenu(View v){//-----------------------------------------------------------метод показа PopupMenu
-        PopupMenu popupMenu = new PopupMenu(getContext(), v);
+        PopupMenu popupMenu = new PopupMenu(getContext(), v);//TODO: посмотреть как программно создавать popup меню и как с ним работать, чтобы вынести в отдельный класс, вынести запросы камеры и галереи в интератор
         popupMenu.inflate(R.menu.photo_popup_menu);
 
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {

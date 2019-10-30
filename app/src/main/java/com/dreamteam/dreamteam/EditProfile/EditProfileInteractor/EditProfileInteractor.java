@@ -32,9 +32,8 @@ public class EditProfileInteractor implements EditProfileFromHTTPManagerInterfac
         this.delegate = delegate;
     }
 
-
-    public void putUser(final User user, final Bitmap bitmap){//------------------------------------Отправка User
-
+    //Отправка User
+    public void putUser(final User user, final Bitmap bitmap){
         final String urlPath = config.serverURL + config.userPORT + config.reqUser;
         new Thread(new Runnable() {
             @Override
@@ -53,7 +52,8 @@ public class EditProfileInteractor implements EditProfileFromHTTPManagerInterfac
         }).start();
     }
 
-    private String decodeBitmapInBase64 (Bitmap bitmap){//------------------------------------------декодирование Bitmap в Base64
+    //декодирование Bitmap в Base64
+    private String decodeBitmapInBase64 (Bitmap bitmap){
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
         // Получаем изображение из потока в виде байтов
@@ -61,8 +61,9 @@ public class EditProfileInteractor implements EditProfileFromHTTPManagerInterfac
         return PREFIX + Base64.encodeToString(bytes, Base64.NO_WRAP);
     }
 
+    //распределение получиных ответов с сервера
     @Override
-    public void response(byte[] byteArray, String type) {//-----------------------------------------распределение получиных ответов с сервера
+    public void response(byte[] byteArray, String type) {
         if (type.equals(PUT_USER)){
             putUserResponse(byteArray);
         }else if (type.equals(IMAGE_TYPE)) {
@@ -70,7 +71,8 @@ public class EditProfileInteractor implements EditProfileFromHTTPManagerInterfac
         }
     }
 
-    private void putUserResponse(byte[] byteArray) {//----------------------------------------------обработка полученных данных
+    //обработка полученных данных
+    private void putUserResponse(byte[] byteArray) {
         try {
             final User user = createUserOfBytes(byteArray);
             if (user == null) {
@@ -82,13 +84,18 @@ public class EditProfileInteractor implements EditProfileFromHTTPManagerInterfac
             Runnable myRunnable = new Runnable() {
                 @Override
                 public void run() {
-                    delegate.answerPutUser(user);//выполнение дальнейшего кода в основном потоке
+
+                    //выполнение дальнейшего кода в основном потоке
+                    delegate.answerPutUser(user);
                 }
             };
             mainHandler.post(myRunnable);
 
+            //отправка запроса на получение картинки
             getImageResponse(user);
-            Thread.currentThread().interrupted();//закрытие текущего потока
+
+            //закрытие текущего потока
+            Thread.currentThread().interrupted();
         } catch (Exception error) {
             error(error);
         }
@@ -99,13 +106,15 @@ public class EditProfileInteractor implements EditProfileFromHTTPManagerInterfac
 
     }
 
-    private User createUserOfBytes(byte[] byteArray) {//--------------------------------------------получение User из массива данных
+    //Получение User из массива данных
+    private User createUserOfBytes(byte[] byteArray) {
         Gson gson = new Gson();
         String jsonString = new String(byteArray);
         return gson.fromJson(jsonString, User.class);
     }
 
-    public void getImageResponse(User user) {//------------------------------------------------------получение картинки
+    //получение картинки
+    private void getImageResponse(User user) {
         try {
             String imageUrl = config.serverURL + config.userPORT + user.content.mediaData.image;
             httpManager.getRequest(imageUrl, IMAGE_TYPE, EditProfileInteractor.this);
@@ -113,7 +122,9 @@ public class EditProfileInteractor implements EditProfileFromHTTPManagerInterfac
             Log.e("EditProfileInteractor", "Error downloading image", ioe);
         }
     }
-    public void getImage(byte[] byteArray) {//-------------------------------------------------------получение картинки(преобразование в bitmap)
+
+    //получение картинки(преобразование в bitmap)
+    private void getImage(byte[] byteArray) {
         final Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
         Handler mainHandler = new Handler(Looper.getMainLooper());

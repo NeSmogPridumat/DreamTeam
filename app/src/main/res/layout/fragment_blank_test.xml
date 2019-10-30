@@ -9,6 +9,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Привет" />
+        android:text="Пустота"
+        android:textSize="60dp"
+        android:textColor="@android:color/black"/>
 
 </FrameLayout>

@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
 
                             case R.id.notification:
                                 clearMainActivity();
+                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new BlankTest()).commit();
                                 break;
                         }
                         return true;
@@ -66,14 +67,12 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
     public void clearMainActivity(){
 
         FragmentManager fm = getSupportFragmentManager();
-        int j = fm.getBackStackEntryCount();
         for(int i = 0; i <= (fm.getBackStackEntryCount() + 1); ++i) {
             fm.popBackStack();
         }
         for (Fragment fragment:getSupportFragmentManager().getFragments()) {//TODO: если нажата страница группы, то не удаляет список
             getSupportFragmentManager().beginTransaction().remove(fragment).commit();
         }
-        System.gc();
     }
 
     public void changeFragment(Fragment fragment, String type) {
@@ -84,6 +83,8 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         } else {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, getSupportFragmentManager().findFragmentByTag(type)).commit();
         }
+
+        System.gc();
     }
 
     public void changeFragmentWitchBackstack(Fragment fragment, String type) {
